@@ -4,7 +4,7 @@
 //  Change PROXY_URL if needed
 // ============================================
 
-const PROXY_URL = "https://brainunlock-api.onrender.com/explain";
+const PROXY_URL = "https://brainunlock.onrender.com/explain";
 
 // ===== GAME STATE =====
 let gameState = {
