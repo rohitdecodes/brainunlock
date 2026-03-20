@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrainUnlock — Explain It</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <canvas id="particleCanvas"></canvas>
+  <div class="scanlines"></div>
+
+  <!-- HUD TOP BAR -->
+  <div class="hud-bar">
+    <div class="hud-left">
+      <div class="logo">BRAIN<span>UNLOCK</span></div>
+      <div class="version">v2.0.77</div>
+    </div>
+    <div class="hud-center">
+      <div class="stat-block">
+        <div class="stat-label">LEVEL</div>
+        <div class="stat-value" id="playerLevel">1</div>
+      </div>
+      <div class="xp-bar-wrap">
+        <div class="xp-label">XP <span id="xpCurrent">0</span> / <span id="xpNext">100</span></div>
+        <div class="xp-track">
+          <div class="xp-fill" id="xpFill" style="width:0%"></div>
+          <div class="xp-glow" id="xpGlow" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">STREAK</div>
+        <div class="stat-value" id="streakCount">0<span class="streak-fire" id="streakFire"></span></div>
+      </div>
+    </div>
+    <div class="hud-right">
+      <div class="stat-block">
+        <div class="stat-label">UNLOCKED</div>
+        <div class="stat-value" id="totalUnlocked">0</div>
+      </div>
+      <button class="achievement-btn" onclick="toggleAchievements()">🏆 <span id="achievementCount">0</span></button>
+    </div>
+  </div>
+
+  <!-- ACHIEVEMENT PANEL -->
+  <div class="achievement-panel" id="achievementPanel">
+    <div class="panel-header">
+      <span>ACHIEVEMENTS</span>
+      <button onclick="toggleAchievements()" class="close-btn">✕</button>
+    </div>
+    <div class="achievement-list" id="achievementList"></div>
+  </div>
+
+  <!-- MAIN -->
+  <main>
+    <div class="mission-card">
+      <div class="mission-header">
+        <div class="mission-tag">MISSION BRIEFING</div>
+        <div class="difficulty-selector">
+          <span class="diff-label">MODE:</span>
+          <button class="diff-btn active" data-mode="all" onclick="setMode(this)">ALL LEVELS</button>
+          <button class="diff-btn" data-mode="eli5" onclick="setMode(this)">ELI5 ONLY</button>
+          <button class="diff-btn" data-mode="expert" onclick="setMode(this)">EXPERT ONLY</button>
+        </div>
+      </div>
+
+      <div class="input-zone">
+        <div class="input-corner tl"></div>
+        <div class="input-corner tr"></div>
+        <div class="input-corner bl"></div>
+        <div class="input-corner br"></div>
+        <textarea id="topicInput" placeholder="ENTER TARGET KNOWLEDGE..." maxlength="500"></textarea>
+        <div class="input-meta">
+          <div class="char-count"><span id="charCount">0</span>/500 CHARS</div>
+          <div class="shortcut-hint">CTRL+ENTER TO FIRE</div>
+        </div>
+      </div>
+
+      <div class="chip-row">
+        <span class="topic-chip" onclick="fillTopic('Black holes')">◈ Black holes</span>
+        <span class="topic-chip" onclick="fillTopic('TCP/IP')">◈ TCP/IP</span>
+        <span class="topic-chip" onclick="fillTopic('Recursion')">◈ Recursion</span>
+        <span class="topic-chip" onclick="fillTopic('Inflation')">◈ Inflation</span>
+        <span class="topic-chip" onclick="fillTopic('Quantum entanglement')">◈ Quantum entanglement</span>
+        <span class="topic-chip" onclick="fillTopic('Machine learning')">◈ Machine learning</span>
+        <span class="topic-chip" onclick="fillTopic('DNA replication')">◈ DNA replication</span>
+        <span class="topic-chip" onclick="fillTopic('Blockchain')">◈ Blockchain</span>
+      </div>
+
+      <button class="fire-btn" id="explainBtn" onclick="explainTopic()">
+        <div class="fire-btn-inner">
+          <span class="fire-icon">⚡</span>
+          <span class="fire-text" id="btnText">UNLOCK KNOWLEDGE</span>
+          <div class="fire-progress" id="fireProgress"></div>
+        </div>
+      </button>
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards-grid" id="cardsGrid">
+
+      <div class="knowledge-card" id="card-eli5" data-level="eli5">
+        <div class="card-rank">
+          <div class="rank-badge rank-1">
+            <div class="rank-icon">★</div>
+            <div class="rank-name">ELI5</div>
+          </div>
+          <div class="card-title-block">
+            <div class="card-title">BEGINNER</div>
+            <div class="card-sub">Like I'm 5 Years Old</div>
+          </div>
+          <div class="card-xp-reward">+<span class="xp-num">15</span> XP</div>
+        </div>
+        <div class="card-content">
+          <div class="skeleton-wrap" id="skel-eli5">
+            <div class="skel-line"></div>
+            <div class="skel-line"></div>
+            <div class="skel-line short"></div>
+          </div>
+          <p class="card-text" id="text-eli5"></p>
+          <div class="card-actions" id="actions-eli5">
+            <button class="action-btn" onclick="copyCard('eli5')"><span id="copy-eli5">⎘ COPY</span></button>
+            <button class="action-btn" onclick="rateCard('eli5', 1)">👍</button>
+            <button class="action-btn" onclick="rateCard('eli5', -1)">👎</button>
+            <div class="card-stars" id="stars-eli5"></div>
+          </div>
+        </div>
+        <div class="card-unlock-flash" id="flash-eli5"></div>
+      </div>
+
+      <div class="knowledge-card featured" id="card-college" data-level="college">
+        <div class="featured-tag">RECOMMENDED</div>
+        <div class="card-rank">
+          <div class="rank-badge rank-2">
+            <div class="rank-icon">★★</div>
+            <div class="rank-name">LVL 2</div>
+          </div>
+          <div class="card-title-block">
+            <div class="card-title">COLLEGE</div>
+            <div class="card-sub">Student Level</div>
+          </div>
+          <div class="card-xp-reward">+<span class="xp-num">25</span> XP</div>
+        </div>
+        <div class="card-content">
+          <div class="skeleton-wrap" id="skel-college">
+            <div class="skel-line"></div>
+            <div class="skel-line"></div>
+            <div class="skel-line"></div>
+            <div class="skel-line short"></div>
+          </div>
+          <p class="card-text" id="text-college"></p>
+          <div class="card-actions" id="actions-college">
+            <button class="action-btn" onclick="copyCard('college')"><span id="copy-college">⎘ COPY</span></button>
+            <button class="action-btn" onclick="rateCard('college', 1)">👍</button>
+            <button class="action-btn" onclick="rateCard('college', -1)">👎</button>
+            <div class="card-stars" id="stars-college"></div>
+          </div>
+        </div>
+        <div class="card-unlock-flash" id="flash-college"></div>
+      </div>
+
+      <div class="knowledge-card" id="card-expert" data-level="expert">
+        <div class="card-rank">
+          <div class="rank-badge rank-3">
+            <div class="rank-icon">★★★</div>
+            <div class="rank-name">EXPERT</div>
+          </div>
+          <div class="card-title-block">
+            <div class="card-title">EXPERT</div>
+            <div class="card-sub">Deep Dive</div>
+          </div>
+          <div class="card-xp-reward">+<span class="xp-num">40</span> XP</div>
+        </div>
+        <div class="card-content">
+          <div class="skeleton-wrap" id="skel-expert">
+            <div class="skel-line"></div>
+            <div class="skel-line"></div>
+            <div class="skel-line"></div>
+            <div class="skel-line short"></div>
+          </div>
+          <p class="card-text" id="text-expert"></p>
+          <div class="card-actions" id="actions-expert">
+            <button class="action-btn" onclick="copyCard('expert')"><span id="copy-expert">⎘ COPY</span></button>
+            <button class="action-btn" onclick="rateCard('expert', 1)">👍</button>
+            <button class="action-btn" onclick="rateCard('expert', -1)">👎</button>
+            <div class="card-stars" id="stars-expert"></div>
+          </div>
+        </div>
+        <div class="card-unlock-flash" id="flash-expert"></div>
+      </div>
+
+    </div>
+
+    <!-- ERROR -->
+    <div class="error-zone" id="errorZone"></div>
+
+    <!-- LEVEL UP OVERLAY -->
+    <div class="levelup-overlay" id="levelupOverlay">
+      <div class="levelup-box">
+        <div class="levelup-flash"></div>
+        <div class="levelup-label">LEVEL UP!</div>
+        <div class="levelup-number" id="levelupNumber">2</div>
+        <div class="levelup-sub">NEW RANK ACHIEVED</div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
