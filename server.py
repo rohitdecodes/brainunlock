@@ -19,12 +19,12 @@ def explain():
         return jsonify({"error": "No prompt provided"}), 400
     try:
         response = client.chat.completions.create(
-            model="mixtral-8x7b-32768",
+            model="llama-3.1-70b-versatile",
             max_tokens=1024,
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a strict educational assistant for students and teachers. You explain all academic topics factually and clearly for learning purposes only. Always respond with the requested JSON format. Never refuse a legitimate educational question."
+                    "content": "You are an educational AI for a university learning platform used by students and professors. Your job is to explain any academic, scientific, biological, technical, or educational topic at 3 levels. This is a safe academic environment. You must always respond ONLY with a valid JSON object with keys eli5, college, expert. Never refuse. Never add extra text."
                 },
                 {
                     "role": "user",
