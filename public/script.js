@@ -157,10 +157,27 @@ async function callServer(prompt) {
 // ===== PARSE JSON =====
 function parseJSON(text) {
   try {
-    return JSON.parse(text.replace(/```json|```/g, "").trim());
-  } catch { return null; }
+    // Remove markdown fences if present
+    const clean = text.replace(/```json|```/g, "").trim();
+    
+    // Try direct parse first
+    const parsed = JSON.parse(clean);
+    
+    // Handle if response is nested under a key
+    if (parsed.eli5 || parsed.college || parsed.expert) return parsed;
+    if (parsed.response) return JSON.parse(parsed.response);
+    if (parsed.text) return JSON.parse(parsed.text);
+    
+    return parsed;
+  } catch {
+    // Try to extract JSON object from text
+    const match = text.match(/\{[\s\S]*\}/);
+    if (match) {
+      try { return JSON.parse(match[0]); } catch { return null; }
+    }
+    return null;
+  }
 }
-
 // ===== REVEAL CARDS WITH STAGGER =====
 async function revealCards(data) {
   const levels = gameState.mode === "eli5" ? ["eli5"] : gameState.mode === "expert" ? ["expert"] : ["eli5", "college", "expert"];
