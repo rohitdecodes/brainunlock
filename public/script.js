@@ -101,12 +101,22 @@ async function explainTopic() {
   showSkeletons();
   cardsGrid.classList.add("visible");
 
-  const prompt = `You are an expert teacher. Explain the following topic at exactly 3 levels.
+const prompt = `You are a world-class teacher known for giving incredibly accurate, insightful explanations. Explain the following topic at exactly 3 levels. Be specific, factual and detailed.
+
 Return ONLY a raw JSON object with exactly these 3 keys: "eli5", "college", "expert".
-- "eli5": explain like I'm 5 years old. Fun analogy. Max 3 sentences.
-- "college": explain for a college student who knows basics. Clear and accurate. Max 4 sentences.
-- "expert": explain with technical depth. Proper terminology. Max 5 sentences.
-No preamble. No markdown. No backticks. Just raw JSON.
+
+"eli5": Explain to a 5 year old using a single vivid real-world analogy. Must be fun, relatable and accurate. 2-3 sentences max.
+
+"college": Explain to a college student with foundational knowledge. Include how it works, why it matters, and a real use case. Be accurate and clear. 4-5 sentences.
+
+"expert": Explain with full technical depth. Use correct terminology, mention underlying mechanisms, trade-offs, real-world implementations, and current relevance. 5-6 sentences. This should read like a senior engineer or PhD researcher explaining it.
+
+Rules:
+- Never be vague or generic
+- Always be factually correct
+- Tailor explanation specifically to the topic, not a generic template
+- No preamble, no markdown, no backticks, just raw JSON
+
 Topic: ${topic}`;
 
   try {
