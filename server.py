@@ -19,9 +19,18 @@ def explain():
         return jsonify({"error": "No prompt provided"}), 400
     try:
         response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="mixtral-8x7b-32768",
             max_tokens=1024,
-            messages=[{"role": "user", "content": prompt}]
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a strict educational assistant for students and teachers. You explain all academic topics factually and clearly for learning purposes only. Always respond with the requested JSON format. Never refuse a legitimate educational question."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
         )
         text = response.choices[0].message.content
         return jsonify({"text": text})
@@ -31,7 +40,3 @@ def explain():
 if __name__ == "__main__":
     print("🚀 BrainUnlock server running at http://localhost:5000")
     app.run(debug=True, port=5000)
-```
-
----
-
