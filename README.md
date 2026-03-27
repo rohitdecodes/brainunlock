@@ -2,7 +2,7 @@
 
 > Any topic. Three brains. Zero confusion.
 
-A gamified AI-powered knowledge explainer that breaks down any topic at 3 levels — ELI5, College, and Expert. Built in one day with vibe coding.
+A gamified AI-powered knowledge explainer that breaks down any topic at 3 levels — ELI5, College, and Expert.
 
 ![Deployed](https://img.shields.io/badge/Status-Live-brightgreen) ![AI](https://img.shields.io/badge/AI-Groq%20%2B%20Llama-purple)
 
