@@ -117,3 +117,8 @@ brainunlock/
 ## 📄 License
 
 MIT — use it, remix it, build on it.
+
+## Author
+
+Just another vibe code project building whenever i get some ideas !!
+
